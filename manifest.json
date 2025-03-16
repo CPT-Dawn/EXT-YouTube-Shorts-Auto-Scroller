@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Shorts Auto Scroller",
+  "version": "1.0.0",
+  "description": "Auto-scroll YouTube Shorts hands-free! Watch nonstop while eating, working, or multitasking—no taps needed! 🚀",
+  "icons": {
+    "128": "src/icons/icon128.png",
+    "48": "src/icons/icon48.png",
+    "38": "src/icons/icon38.png",
+    "32": "src/icons/icon32.png",
+    "19": "src/icons/icon19.png",
+    "16": "src/icons/icon16.png"
+  },
+  "permissions": ["storage", "activeTab", "scripting", "tabs"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.instagram.com/reels/*"],
+      "js": ["src/scripts/content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "src/popup.html"
+  },
+  "background": {
+    "service_worker": "src/scripts/background.js"
+  }
+}
