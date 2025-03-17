@@ -1,73 +1,60 @@
-function scrollToNextShort() {
-  const shorts = document.querySelectorAll('ytd-reel-video-renderer');
-  const videos = document.querySelectorAll('video');
+(function() {
+  console.log("🔄 YouTube Shorts Auto-Scroll Loaded...");
 
-  let currentIndex = Array.from(videos).findIndex(video => !video.paused && video.duration > 0);
+  function scrollToNextShort() {
+      const shorts = document.querySelectorAll('ytd-reel-video-renderer');
+      let currentIndex = Array.from(shorts).findIndex(short => short.matches('[is-active]'));
 
-  if (currentIndex !== -1 && shorts[currentIndex + 1]) {
-      console.log("✅ Instantly scrolling to next Short...");
-      shorts[currentIndex + 1].scrollIntoView({ behavior: "instant" });
+      if (currentIndex !== -1 && shorts[currentIndex + 1]) {
+          console.log("🎯 Scrolling to next Short...");
+          shorts[currentIndex + 1].scrollIntoView({ behavior: "smooth" });
+      } else {
+          console.warn("⚠️ No next Short found.");
+      }
+  }
 
-      // Ensure the next Short plays instantly
-      setTimeout(() => {
-          let newVideo = document.querySelector("video");
-          if (newVideo && newVideo.currentTime === 0) {
-              console.log("▶️ Forcing play on next Short...");
-              newVideo.play();
+  function monitorShorts() {
+      let lastCheckedShort = null;
+
+      setInterval(() => {
+          let video = document.querySelector("video");
+          if (!video) return;
+
+          let currentTime = video.currentTime;
+          let duration = video.duration;
+          let activeShort = document.querySelector('ytd-reel-video-renderer[is-active]');
+
+          console.log(`▶️ Playing: ${currentTime.toFixed(2)}s / ${duration.toFixed(2)}s`);
+
+          // Scroll only once per Short
+          if (duration > 0 && currentTime >= duration - 0.1 && activeShort !== lastCheckedShort) {
+              lastCheckedShort = activeShort;
+              console.log("🎬 Short ended, scrolling now...");
+              scrollToNextShort();
           }
-      }, 300);
-  } else {
-      console.warn("⚠️ No next Short found! Retrying...");
-      setTimeout(scrollToNextShort, 500); // Retry after a short delay
+      }, 100);
   }
-}
 
-function monitorPlayback() {
-  let scrollTriggered = false;
+  function observeShorts() {
+      const observer = new MutationObserver(() => {
+          console.log("🔄 YouTube page updated, restarting auto-scroll...");
+          monitorShorts();
+      });
 
-  setInterval(() => {
-      let video = document.querySelector("video");
-      if (!video) return;
-
-      let currentTime = video.currentTime;
-      let duration = video.duration;
-
-      console.log(`⏳ Playing Short: ${currentTime.toFixed(2)}s / ${duration.toFixed(2)}s`);
-
-      // If video is at the end and YouTube loops it, force scroll
-      if (duration > 0 && (currentTime >= duration - 0.1 || currentTime < 0.1) && !scrollTriggered) {
-          scrollTriggered = true;
-          console.log("🎬 Short ended! Instantly scrolling...");
-          scrollToNextShort();
-      }
-
-      // Reset trigger if user manually switches Shorts
-      if (currentTime > 0.5) {
-          scrollTriggered = false;
-      }
-  }, 50); // Faster check every 50ms for **near-instant** response
-}
-
-// Detect when new Shorts are loaded and restart monitoring
-function observeShorts() {
-  const observer = new MutationObserver(() => {
-      console.log("🔄 Detected YouTube updates, re-initializing auto-scroll...");
-      monitorPlayback();
-  });
-
-  observer.observe(document.body, { childList: true, subtree: true });
-}
-
-// Ensure the script runs only when Shorts are detected
-function initAutoScroll() {
-  if (document.querySelector('ytd-reel-video-renderer')) {
-      console.log("✅ YouTube Shorts detected. Initializing auto-scroll...");
-      monitorPlayback();
-      observeShorts(); // Detect dynamic changes in Shorts
-  } else {
-      console.warn("⚠️ No Shorts found on this page.");
+      observer.observe(document.body, { childList: true, subtree: true });
   }
-}
 
-// Run after page load
-window.onload = () => setTimeout(initAutoScroll, 1000);
+  function startAutoScroll() {
+      let firstShort = document.querySelector('ytd-reel-video-renderer');
+      if (firstShort) {
+          console.log("✅ Shorts detected. Auto-scroll is active.");
+          monitorShorts();
+          observeShorts();
+      } else {
+          console.warn("⚠️ No Shorts found.");
+      }
+  }
+
+  // Run after page load
+  window.onload = () => setTimeout(startAutoScroll, 1000);
+})();
