@@ -7,7 +7,12 @@
 
       if (currentIndex !== -1 && shorts[currentIndex + 1]) {
           console.log("🎯 Scrolling to next Short...");
-          shorts[currentIndex + 1].scrollIntoView({ behavior: "smooth" });
+          
+          // Ensure scrolling does not trigger a URL change
+          let nextShort = shorts[currentIndex + 1];
+          let scrollOptions = { behavior: "smooth", block: "center" };
+          
+          nextShort.scrollIntoView(scrollOptions);
       } else {
           console.warn("⚠️ No next Short found.");
       }
@@ -23,8 +28,6 @@
           let currentTime = video.currentTime;
           let duration = video.duration;
           let activeShort = document.querySelector('ytd-reel-video-renderer[is-active]');
-
-          console.log(`▶️ Playing: ${currentTime.toFixed(2)}s / ${duration.toFixed(2)}s`);
 
           // Scroll only once per Short
           if (duration > 0 && currentTime >= duration - 0.1 && activeShort !== lastCheckedShort) {
