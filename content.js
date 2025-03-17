@@ -1,75 +1,69 @@
-let autoScrollEnabled = true;
+function scrollToNextShort() {
+  const shorts = document.querySelectorAll('ytd-reel-video-renderer');
+  const videos = document.querySelectorAll('video');
 
-// Load setting from storage
-chrome.storage.sync.get("autoScroll", (data) => {
-  if (data.autoScroll !== undefined) {
-    autoScrollEnabled = data.autoScroll;
+  let currentIndex = Array.from(videos).findIndex(video => !video.paused && video.duration > 0);
+
+  if (currentIndex !== -1 && shorts[currentIndex + 1]) {
+      console.log("✅ Instantly scrolling to next Short...");
+      shorts[currentIndex + 1].scrollIntoView({ behavior: "smooth" });
+
+      // Ensure YouTube properly loads the next Short
+      setTimeout(() => {
+          if (!document.querySelector("video") || document.querySelector("video").currentTime === 0) {
+              console.log("🔄 Forcing another scroll due to YouTube lag...");
+              shorts[currentIndex + 1].scrollIntoView({ behavior: "smooth" });
+          }
+      }, 500);
+  } else {
+      console.warn("⚠️ No next Short found! Trying again...");
+      setTimeout(scrollToNextShort, 500); // Retry scrolling after a short delay
   }
-});
+}
 
-// Listen for storage changes (toggle switch)
-chrome.storage.onChanged.addListener((changes) => {
-  if (changes.autoScroll) {
-    autoScrollEnabled = changes.autoScroll.newValue;
-  }
-});
-
-// Function to play the first Short by clicking the play button
-function playFirstShort() {
+function monitorPlayback() {
   const video = document.querySelector("video");
   if (!video) {
-    console.log("⚠️ No video found!");
-    return;
+      console.error("⚠️ No video element found!");
+      return;
   }
 
-  if (!video.paused) {
-    console.log("✅ First Short is already playing.");
-    return;
-  }
+  let lastTime = 0;
+  let scrollTriggered = false;
 
-  // Try clicking the play button in the YouTube UI
-  const playButton = document.querySelector(".ytp-play-button");
-  if (playButton) {
-    playButton.click();
-    console.log("▶️ Clicked play button to start first Short!");
+  setInterval(() => {
+      if (!video) return;
+
+      let currentTime = video.currentTime;
+      let duration = video.duration;
+
+      console.log(`⏳ Playing Short: ${currentTime.toFixed(2)}s / ${duration.toFixed(2)}s`);
+
+      // If video reaches the exact end, trigger instant scroll
+      if (currentTime >= duration - 0.05 && !scrollTriggered) {
+          scrollTriggered = true;
+          console.log("🎬 Short ended! Instantly scrolling...");
+          scrollToNextShort();
+      }
+
+      // Reset trigger if user manually switches Shorts
+      if (currentTime < lastTime) {
+          scrollTriggered = false;
+      }
+
+      lastTime = currentTime;
+  }, 100); // Faster check every 100ms for instant response
+}
+
+// Ensure the script runs only when Shorts are detected
+function initAutoScroll() {
+  if (document.querySelector('ytd-reel-video-renderer')) {
+      console.log("✅ YouTube Shorts detected. Initializing auto-scroll...");
+      monitorPlayback();
   } else {
-    console.log("⚠️ Play button not found! Trying direct play...");
-    video.play().catch(() => {
-      console.log("❌ Autoplay blocked by browser.");
-    });
+      console.warn("⚠️ No Shorts found on this page.");
   }
 }
 
-// Function to scroll to the next YouTube Short
-function goToNextShort() {
-  if (!autoScrollEnabled) return;
-
-  const shorts = document.querySelectorAll("ytd-reel-video-renderer");
-  const activeShort = document.querySelector("ytd-reel-video-renderer[is-active]");
-  const activeIndex = Array.from(shorts).indexOf(activeShort);
-
-  if (activeIndex !== -1 && shorts[activeIndex + 1]) {
-    shorts[activeIndex + 1].scrollIntoView({ behavior: "smooth" });
-    console.log("✅ Scrolled to the next Short!");
-  } else {
-    console.log("⚠️ Next Short not found!");
-  }
-}
-
-// Function to check if the video has ended
-function checkVideoEnd() {
-  const video = document.querySelector("video");
-
-  if (video) {
-    video.addEventListener("ended", () => {
-      console.log("🎥 Video ended, moving to next...");
-      goToNextShort();
-    });
-  }
-}
-
-// Run after page loads
-window.addEventListener("load", () => {
-  setTimeout(playFirstShort, 1500); // Clicks play button if needed
-  setInterval(checkVideoEnd, 1000); // Continuously check if video ends
-});
+// Run after page load
+window.onload = () => setTimeout(initAutoScroll, 1000);
