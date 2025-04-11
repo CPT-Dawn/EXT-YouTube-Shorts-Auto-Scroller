@@ -53,24 +53,6 @@
     <button class="toggleBtn stop">Stop</button>
     <i id="error"></i>
 
-    <script>
-      const btn = document.querySelector(".toggleBtn");
-
-      btn.addEventListener("click", () => {
-        if (btn.classList.contains("stop")) {
-          btn.classList.remove("stop");
-          btn.classList.add("start");
-          btn.textContent = "Start";
-          // Add your "stop scrolling" logic here
-        } else {
-          btn.classList.remove("start");
-          btn.classList.add("stop");
-          btn.textContent = "Stop";
-          // Add your "start scrolling" logic here
-        }
-      });
-    </script>
-
     <script src="script.js"></script>
   </body>
 </html>
