@@ -530,4 +530,3 @@ chrome.runtime.onMessage.addListener(({ toggle }, _, sendResponse) => {
     }
     return true;
 });
-
