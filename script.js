@@ -103,47 +103,6 @@ function changePage(page, direction, index) {
     }
 }
 function getAllSettingsForPopup() {
-    // Get Settings and show them on the popup (and check for updates and reflect them)
-    chrome.storage.local.get(["shortCutKeys", "shortCutInteractKeys"], async ({ shortCutKeys, shortCutInteractKeys }) => {
-        if (shortCutKeys == undefined) {
-            await chrome.storage.local.set({
-                shortCutKeys: ["shift", "d"],
-            });
-            shortCutInput.value = "shift+d";
-        }
-        else {
-            shortCutInput.value = shortCutKeys.join("+");
-        }
-        shortCutInput.addEventListener("change", () => {
-            const value = shortCutInput.value.trim().split(/\s*\+\s*/);
-            if (!value.length)
-                return;
-            chrome.storage.local.set({
-                shortCutKeys: value,
-            });
-            shortCutInput.value = value.join("+");
-        });
-        if (shortCutInteractKeys == undefined) {
-            await chrome.storage.local.set({
-                shortCutInteractKeys: ["shift", "g"],
-            });
-            shortCutInteractInput.value = "shift+g";
-        }
-        else {
-            shortCutInteractInput.value = shortCutInteractKeys.join("+");
-        }
-        shortCutInteractInput.addEventListener("change", (e) => {
-            const value = e.target.value
-                .trim()
-                .split(/\s*\+\s*/);
-            if (!value.length)
-                return;
-            chrome.storage.local.set({
-                shortCutInteractKeys: value,
-            });
-            shortCutInteractInput.value = value.join("+");
-        });
-    });
     chrome.storage.onChanged.addListener((result) => {
         if (result["applicationIsOn"]?.newValue != undefined)
             changeToggleButton(result["applicationIsOn"].newValue);
