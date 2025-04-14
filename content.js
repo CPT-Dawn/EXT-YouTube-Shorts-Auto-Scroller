@@ -224,7 +224,7 @@ function getParentVideo() {
             return startAutoScrolling();
         }
         if (result["applicationIsOn"])
-            startAutoScrolling();
+            startAutoScrolling(); 
     });
     checkForNewShort();
     checkApplicationState();
