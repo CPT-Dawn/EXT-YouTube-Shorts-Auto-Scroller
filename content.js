@@ -1,31 +1,11 @@
 // CONSTANT SELECTORS VARIBLES
 const VIDEOS_LIST_SELECTOR = ".reel-video-in-sequence";
-const NEXT_VIDEO_BUTTON_SELECTOR = "#navigation-button-down > ytd-button-renderer > yt-button-shape > button";
-const LIKE_BUTTON_SELECTOR = "ytd-reel-video-renderer[is-active] #like-button > yt-button-shape > label > button";
-const DISLIKE_BUTTON_SELECTOR = "ytd-reel-video-renderer[is-active] #dislike-button > yt-button-shape > label > button";
 const COMMENTS_SELECTOR = "#anchored-panel > ytd-engagement-panel-section-list-renderer:nth-child(1)";
-const LIKES_COUNT_SELECTOR = "ytd-reel-video-renderer[is-active] #factoids > factoid-renderer:nth-child(1) > div > span.YtwFactoidRendererValue > span";
-const VIEW_COUNT_SELECTOR = "ytd-reel-video-renderer[is-active] #factoids > view-count-factoid-renderer > factoid-renderer > div > span.YtwFactoidRendererValue > span";
-const COMMENTS_COUNT_SELECTOR = "ytd-reel-video-renderer[is-active] #comments-button > ytd-button-renderer > yt-button-shape > label > div > span";
 // APP VARIABLES
-let shortCutToggleKeys = [];
-let shortCutInteractKeys = [];
 let scrollOnCommentsCheck = false;
 let scrollDirection = 1;
 let amountOfPlays = 0;
 let amountOfPlaysToSkip = 1;
-let filterMinLength = "none";
-let filterMaxLength = "none";
-let filterMinViews = "none";
-let filterMaxViews = "none";
-let filterMinLikes = "none";
-let filterMaxLikes = "none";
-let filterMinComments = "none";
-let filterMaxComments = "none";
-let blockedCreators = [];
-let whitelistedCreators = [];
-let blockedTags = [];
-let scrollOnNoTags = false;
 let additionalScrollDelay = 0;
 // STATE VARIABLES
 let currentVideoIndex = null;
