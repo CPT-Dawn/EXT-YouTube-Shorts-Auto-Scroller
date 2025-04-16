@@ -167,41 +167,6 @@ function checkIfVaildVideo() {
         currentVideoParent?.querySelector("ad-badge-view-model > badge-shape > div")?.innerText?.toLowerCase() === "sponsored") {
         return false;
     }
-    // Check if the video is from a blocked creator and if it is, skip it (FROM SETTINGS)
-    const authorOfVideo = currentVideoParent?.querySelector("#metapanel > yt-reel-metapanel-view-model > div:nth-child(2) > yt-reel-channel-bar-view-model > span > a")?.innerText
-        ?.toLowerCase()
-        .replace("@", "");
-    let tagsOfVideo = [
-        ...currentVideoParent?.querySelectorAll("#metapanel > yt-reel-metapanel-view-model > div:nth-child(3) > yt-shorts-video-title-view-model > h2 > span > span > a"),
-    ].map((src) => src?.innerText?.toLowerCase()?.replaceAll("#", ""));
-    if (!currentVideoParent?.querySelector("#metapanel > yt-reel-metapanel-view-model > div:nth-child(3) > yt-shorts-video-title-view-model > h2 > span")?.innerText) {
-        tagsOfVideo = ["tagsLoading..."];
-    }
-    if (authorOfVideo &&
-        blockedCreators
-            .map((c) => c?.toLowerCase()?.replace("@", ""))
-            .includes(authorOfVideo)) {
-        return false;
-    }
-    else if (tagsOfVideo &&
-        tagsOfVideo
-            .map((tag) => tag?.replaceAll("#", "")?.toLowerCase())
-            .some((tag) => blockedTags
-            .map((tag) => tag?.toLowerCase())
-            .map((tag) => tag?.replace("#", ""))
-            .includes(tag)) &&
-        !whitelistedCreators
-            .map((c) => c?.toLowerCase()?.replace("@", ""))
-            .includes(authorOfVideo)) {
-        return false;
-    }
-    else if (scrollOnNoTags &&
-        tagsOfVideo.length === 0 &&
-        !whitelistedCreators
-            .map((c) => c?.toLowerCase()?.replace("@", ""))
-            .includes(authorOfVideo)) {
-        return false;
-    }
     return true;
 }
 // Helper function to get the parent of the current short playing/played
