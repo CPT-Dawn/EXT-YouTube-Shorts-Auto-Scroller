@@ -1,0 +1,35 @@
+#shorts-hover-button {
+    position: fixed !important;
+    top: 50% !important;
+    right: 20px !important;
+    transform: translateY(-50%) !important;
+    z-index: 999999 !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    border: 2px solid #fff !important;
+    border-radius: 50% !important;
+    width: 60px !important;
+    height: 60px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+    color: white !important;
+}
+
+#shorts-hover-button:hover {
+    background: rgba(255, 0, 0, 0.8) !important;
+    border-color: #fff !important;
+    transform: translateY(-50%) scale(1.1) !important;
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+    #shorts-hover-button {
+        width: 50px !important;
+        height: 50px !important;
+        right: 15px !important;
+    }
+}
