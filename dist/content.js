@@ -129,6 +129,8 @@ async function checkForNewShort() {
       console.log(
         "[Auto Youtube Shorts Scroller] Ad detected..., scrolling to next short..."
       );
+      // Make sure to remove any existing button before skipping
+      removeOnScreenToggleButton();
       return scrollToNextShort(currentShortId, false);
     }
     // Log the current short id
@@ -241,8 +243,14 @@ async function scrollToNextShort(
         block: "nearest",
         inline: "start",
       });
+
       // Then check the new short
       checkForNewShort();
+
+      // Ensure the button is properly managed after scrolling
+      setTimeout(() => {
+        checkAndManageOnScreenButton();
+      }, 500); // Small delay to ensure DOM is updated
     },
     // Sets the additional scroll delay from settings
     useDelayAndCheckComments ? additionalScrollDelay : 0
@@ -624,8 +632,9 @@ async function checkShortValidity(currentShort) {
   });
   checkForNewShort();
   checkApplicationState();
+  // Set up intervals for periodic checks
   setInterval(checkForNewShort, RETRY_DELAY_MS);
-  setInterval(checkAndManageOnScreenButton, 2000);
+  setInterval(checkAndManageOnScreenButton, 1000); // Reduced from 2000ms to 1000ms for more responsive button appearance
   function checkApplicationState() {
     chrome.storage.local.get(["applicationIsOn"], (result) => {
       if (applicationIsOn && result["applicationIsOn"] === false) {
