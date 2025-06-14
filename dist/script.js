@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const scrollOnCommentsInput = document.getElementById(
     "scrollOnCommentsInput"
   );
+  const onScreenButtonInput = document.getElementById("onScreenButtonInput");
   const errorMessage = document.getElementById("error-message");
 
   // Status elements
@@ -11,10 +12,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const statusDot = document.getElementById("status-dot");
   const statusTitle = document.getElementById("status-title");
   const statusDescription = document.getElementById("status-description");
-
   // Setting cards for click handlers
   const mainSettingCard = document.getElementById("main-setting-card");
   const commentsSettingCard = document.getElementById("comments-setting-card");
+  const onScreenButtonSettingCard = document.getElementById(
+    "onscreen-button-setting-card"
+  );
 
   // Load settings on startup
   await loadAllSettings();
@@ -30,11 +33,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       const result = await chrome.storage.local.get([
         "applicationIsOn",
         "scrollOnComments",
-      ]);
-
-      // Set toggle states
+        "showOnScreenButton",
+      ]); // Set toggle states
       statusToggle.checked = result.applicationIsOn !== false; // Default to true
       scrollOnCommentsInput.checked = result.scrollOnComments === true; // Default to false
+      onScreenButtonInput.checked = result.showOnScreenButton !== false; // Default to true
 
       // Update UI status
       updateStatus(statusToggle.checked);
@@ -48,10 +51,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function setupEventListeners() {
     // Main toggle change
-    statusToggle.addEventListener("change", handleMainToggle);
-
-    // Comments setting change
+    statusToggle.addEventListener("change", handleMainToggle); // Comments setting change
     scrollOnCommentsInput.addEventListener("change", handleCommentsToggle);
+
+    // On-screen button setting change
+    onScreenButtonInput.addEventListener("change", handleOnScreenButtonToggle);
 
     // Click handlers for setting cards (makes entire card clickable)
     mainSettingCard.addEventListener("click", (e) => {
@@ -60,7 +64,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         handleMainToggle();
       }
     });
-
     commentsSettingCard.addEventListener("click", (e) => {
       if (
         e.target !== scrollOnCommentsInput &&
@@ -68,6 +71,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       ) {
         scrollOnCommentsInput.checked = !scrollOnCommentsInput.checked;
         handleCommentsToggle();
+      }
+    });
+
+    onScreenButtonSettingCard.addEventListener("click", (e) => {
+      if (
+        e.target !== onScreenButtonInput &&
+        !e.target.closest(".toggle-switch")
+      ) {
+        onScreenButtonInput.checked = !onScreenButtonInput.checked;
+        handleOnScreenButtonToggle();
       }
     });
 
@@ -79,6 +92,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       if (changes.scrollOnComments) {
         scrollOnCommentsInput.checked = changes.scrollOnComments.newValue;
+      }
+      if (changes.showOnScreenButton) {
+        onScreenButtonInput.checked = changes.showOnScreenButton.newValue;
       }
     });
   }
@@ -110,7 +126,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       showError("Failed to toggle extension");
     }
   }
-
   async function handleCommentsToggle() {
     try {
       const scrollOnComments = scrollOnCommentsInput.checked;
@@ -121,6 +136,23 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("[Popup] Comments setting updated:", scrollOnComments);
     } catch (error) {
       console.error("[Popup] Error updating comments setting:", error);
+      showError("Failed to update setting");
+    }
+  }
+
+  async function handleOnScreenButtonToggle() {
+    try {
+      const showOnScreenButton = onScreenButtonInput.checked;
+
+      // Save setting
+      await chrome.storage.local.set({ showOnScreenButton });
+
+      console.log(
+        "[Popup] On-screen button setting updated:",
+        showOnScreenButton
+      );
+    } catch (error) {
+      console.error("[Popup] Error updating on-screen button setting:", error);
       showError("Failed to update setting");
     }
   }
