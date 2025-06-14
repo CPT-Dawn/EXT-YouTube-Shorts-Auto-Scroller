@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Shorts Auto Scroller</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="popup-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="../icons/icon48.png" alt="Extension Icon" class="logo">
+                    <div class="title-section">
+                        <h1 class="title">YouTube Shorts</h1>
+                        <p class="subtitle">Auto Scroller</p>
+                    </div>
+                </div>
+                <div class="version-badge">v1.0</div>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="content">
+            <!-- Status Card -->
+            <div class="status-card" id="status-card">
+                <div class="status-indicator">
+                    <div class="status-dot" id="status-dot"></div>
+                </div>
+                <div class="status-text">
+                    <h3 class="status-title" id="status-title">Extension Ready</h3>
+                    <p class="status-description" id="status-description">Ready to auto-scroll YouTube Shorts</p>
+                </div>
+            </div>
+            
+            <!-- Settings Section -->
+            <div class="settings-section">
+                <h2 class="section-title">Settings</h2>
+                
+                <!-- Main Toggle -->
+                <div class="setting-card primary" id="main-setting-card">
+                    <div class="setting-info">
+                        <div class="setting-icon">🚀</div>
+                        <div class="setting-details">
+                            <h4 class="setting-name">Auto Scroll</h4>
+                            <p class="setting-desc">Automatically scroll to next short</p>
+                        </div>
+                    </div>
+                    <label class="toggle-switch" for="status-toggle" title="Enable or disable auto scroll">
+                        <input type="checkbox" id="status-toggle" class="toggle-input" title="Enable or disable auto scroll">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <!-- Comments Setting -->
+                <div class="setting-card" id="comments-setting-card">
+                    <div class="setting-info">
+                        <div class="setting-icon">💬</div>
+                        <div class="setting-details">
+                            <h4 class="setting-name">Comments Open</h4>
+                            <p class="setting-desc">Scroll even when comments are open</p>
+                        </div>
+                    </div>
+                    <label class="toggle-switch" for="scrollOnCommentsInput" title="Enable or disable scrolling when comments are open">
+                        <input type="checkbox" id="scrollOnCommentsInput" class="toggle-input" title="Enable or disable scrolling when comments are open">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Features List -->
+            <div class="features-section">
+                <h2 class="section-title">Features</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <span class="feature-icon">⚡</span>
+                        <span class="feature-text">Auto Skip Ads</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🔄</span>
+                        <span class="feature-text">Seamless Scrolling</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🎯</span>
+                        <span class="feature-text">Smart Detection</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">💾</span>
+                        <span class="feature-text">Save Settings</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Error Message -->
+            <div class="error-message" id="error-message"></div>
+        </main>
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-text">Enjoy endless YouTube Shorts! 🎬</p>
+        </footer>
+    </div>
+    
+    <script src="../dist/script.js"></script>
+</body>
+</html>
