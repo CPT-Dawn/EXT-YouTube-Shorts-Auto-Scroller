@@ -59,7 +59,7 @@
 
 ## 🖼️ Screenshots
 
-> ![Popup Screenshot](./icons/Main.png)
+> ![Popup Screenshot](./icons/UI.png)
 
 ---
 
