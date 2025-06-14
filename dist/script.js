@@ -26,20 +26,29 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Check current tab and show appropriate status
   await checkCurrentTab();
-
   async function loadAllSettings() {
     try {
       const result = await chrome.storage.local.get([
         "applicationIsOn",
         "scrollOnComments",
         "showOnScreenButton",
-      ]); // Set toggle states
-      statusToggle.checked = result.applicationIsOn !== false; // Default to true
-      scrollOnCommentsInput.checked = result.scrollOnComments === true; // Default to false
-      onScreenButtonInput.checked = result.showOnScreenButton !== false; // Default to true
+      ]);
 
-      // Update UI status
-      updateStatus(statusToggle.checked);
+      // Only set toggle states if elements exist
+      if (statusToggle) {
+        statusToggle.checked = result.applicationIsOn !== false; // Default to true
+      }
+
+      if (scrollOnCommentsInput) {
+        scrollOnCommentsInput.checked = result.scrollOnComments === true; // Default to false
+      }
+
+      if (onScreenButtonInput) {
+        onScreenButtonInput.checked = result.showOnScreenButton !== false; // Default to true
+      }
+
+      // Update UI status - function now checks for element existence
+      updateStatus(result.applicationIsOn !== false);
 
       console.log("[Popup] Settings loaded:", result);
     } catch (error) {
@@ -47,45 +56,67 @@ document.addEventListener("DOMContentLoaded", async () => {
       showError("Failed to load settings");
     }
   }
-
   function setupEventListeners() {
-    // Main toggle change
-    statusToggle.addEventListener("change", handleMainToggle); // Comments setting change
-    scrollOnCommentsInput.addEventListener("change", handleCommentsToggle);
+    // Only add event listeners if elements exist
+    if (statusToggle) {
+      // Main toggle change
+      statusToggle.addEventListener("change", handleMainToggle);
+    }
 
-    // On-screen button setting change
-    onScreenButtonInput.addEventListener("change", handleOnScreenButtonToggle); // Click handlers for setting cards (makes entire card clickable)
-    mainSettingCard.addEventListener("click", (e) => {
-      if (e.target !== statusToggle && !e.target.closest(".toggle")) {
-        statusToggle.checked = !statusToggle.checked;
-        handleMainToggle();
-      }
-    });
+    if (scrollOnCommentsInput) {
+      // Comments setting change
+      scrollOnCommentsInput.addEventListener("change", handleCommentsToggle);
+    }
 
-    commentsSettingCard.addEventListener("click", (e) => {
-      if (e.target !== scrollOnCommentsInput && !e.target.closest(".toggle")) {
-        scrollOnCommentsInput.checked = !scrollOnCommentsInput.checked;
-        handleCommentsToggle();
-      }
-    });
+    if (onScreenButtonInput) {
+      // On-screen button setting change
+      onScreenButtonInput.addEventListener(
+        "change",
+        handleOnScreenButtonToggle
+      );
+    }
 
-    onScreenButtonSettingCard.addEventListener("click", (e) => {
-      if (e.target !== onScreenButtonInput && !e.target.closest(".toggle")) {
-        onScreenButtonInput.checked = !onScreenButtonInput.checked;
-        handleOnScreenButtonToggle();
-      }
-    });
+    // Click handlers for setting cards (makes entire card clickable)
+    if (mainSettingCard && statusToggle) {
+      mainSettingCard.addEventListener("click", (e) => {
+        if (e.target !== statusToggle && !e.target.closest(".toggle")) {
+          statusToggle.checked = !statusToggle.checked;
+          handleMainToggle();
+        }
+      });
+    }
 
-    // Listen for storage changes from other sources
+    if (commentsSettingCard && scrollOnCommentsInput) {
+      commentsSettingCard.addEventListener("click", (e) => {
+        if (
+          e.target !== scrollOnCommentsInput &&
+          !e.target.closest(".toggle")
+        ) {
+          scrollOnCommentsInput.checked = !scrollOnCommentsInput.checked;
+          handleCommentsToggle();
+        }
+      });
+    }
+
+    if (onScreenButtonSettingCard && onScreenButtonInput) {
+      onScreenButtonSettingCard.addEventListener("click", (e) => {
+        if (e.target !== onScreenButtonInput && !e.target.closest(".toggle")) {
+          onScreenButtonInput.checked = !onScreenButtonInput.checked;
+          handleOnScreenButtonToggle();
+        }
+      });
+    } // Listen for storage changes from other sources
     chrome.storage.onChanged.addListener((changes) => {
       if (changes.applicationIsOn) {
-        statusToggle.checked = changes.applicationIsOn.newValue;
+        if (statusToggle) {
+          statusToggle.checked = changes.applicationIsOn.newValue;
+        }
         updateStatus(changes.applicationIsOn.newValue);
       }
-      if (changes.scrollOnComments) {
+      if (changes.scrollOnComments && scrollOnCommentsInput) {
         scrollOnCommentsInput.checked = changes.scrollOnComments.newValue;
       }
-      if (changes.showOnScreenButton) {
+      if (changes.showOnScreenButton && onScreenButtonInput) {
         onScreenButtonInput.checked = changes.showOnScreenButton.newValue;
       }
     });
@@ -188,29 +219,48 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
   function updateStatus(isActive, title, description, statusType) {
-    // Update status dot
-    statusDot.className = "status-dot";
-    if (statusType === "warning") {
-      statusDot.classList.add("warning");
-    } else if (!isActive) {
-      statusDot.classList.add("inactive");
+    // Only manipulate DOM elements if they exist
+    if (statusDot) {
+      // Update status dot
+      statusDot.className = "status-dot";
+      if (statusType === "warning") {
+        statusDot.classList.add("warning");
+      } else if (!isActive) {
+        statusDot.classList.add("inactive");
+      }
     }
 
-    // Update status text
-    statusText.textContent = title || (isActive ? "Active" : "Inactive");
+    // Only update status text if the element exists
+    if (statusText) {
+      statusText.textContent = title || (isActive ? "Active" : "Inactive");
+    }
+
+    // Log status to console instead of UI when elements don't exist
+    console.log(
+      `[Popup] Status: ${isActive ? "Active" : "Inactive"}${
+        title ? " - " + title : ""
+      }`
+    );
   }
-
   function showError(message) {
-    errorMessage.textContent = message;
-    errorMessage.classList.add("show");
+    // Only attempt to show error if element exists
+    if (errorMessage) {
+      errorMessage.textContent = message;
+      errorMessage.classList.add("show");
 
-    // Auto-hide after 5 seconds
-    setTimeout(() => {
-      hideError();
-    }, 5000);
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        hideError();
+      }, 5000);
+    }
+
+    // Log error to console in case UI element is missing
+    console.error(`[Popup] Error: ${message}`);
   }
 
   function hideError() {
-    errorMessage.classList.remove("show");
+    if (errorMessage) {
+      errorMessage.classList.remove("show");
+    }
   }
 });

@@ -9,27 +9,41 @@
   <body>
     <div class="extension-container">
       <h1 class="title">YouTube Shorts Auto Scroller</h1>
-
       <!-- Toggle for enabling/disabling auto-scroll feature -->
-      <label class="toggle-container">
+      <div id="main-setting-card" class="toggle-container">
         <p>Auto-Scroll</p>
-        <input type="checkbox" id="status-toggle" />
+        <input
+          type="checkbox"
+          id="status-toggle"
+          title="Toggle auto-scrolling feature"
+          aria-label="Toggle auto-scrolling feature"
+        />
         <span class="toggle-slider"></span>
-      </label>
+      </div>
 
       <!-- Toggle for showing the button in Shorts -->
-      <label class="toggle-container">
+      <div id="onscreen-button-setting-card" class="toggle-container">
         <p>Show Auto-Scroll Button</p>
-        <input type="checkbox" id="onScreenButtonInput" />
+        <input
+          type="checkbox"
+          id="onScreenButtonInput"
+          title="Toggle on-screen button visibility"
+          aria-label="Toggle on-screen button visibility"
+        />
         <span class="toggle-slider"></span>
-      </label>
+      </div>
 
       <!-- Toggle for comments section -->
-      <label class="toggle-container">
+      <div id="comments-setting-card" class="toggle-container">
         <p>Scroll on Comments</p>
-        <input type="checkbox" id="scrollOnCommentsInput" />
+        <input
+          type="checkbox"
+          id="scrollOnCommentsInput"
+          title="Toggle scrolling when comments are open"
+          aria-label="Toggle scrolling when comments are open"
+        />
         <span class="toggle-slider"></span>
-      </label>
+      </div>
     </div>
 
     <script src="../dist/script.js"></script>
