@@ -8,10 +8,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const errorMessage = document.getElementById("error-message");
 
   // Status elements
-  const statusCard = document.getElementById("status-card");
   const statusDot = document.getElementById("status-dot");
-  const statusTitle = document.getElementById("status-title");
-  const statusDescription = document.getElementById("status-description");
+  const statusText = document.getElementById("status-text");
+
   // Setting cards for click handlers
   const mainSettingCard = document.getElementById("main-setting-card");
   const commentsSettingCard = document.getElementById("comments-setting-card");
@@ -55,30 +54,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     scrollOnCommentsInput.addEventListener("change", handleCommentsToggle);
 
     // On-screen button setting change
-    onScreenButtonInput.addEventListener("change", handleOnScreenButtonToggle);
-
-    // Click handlers for setting cards (makes entire card clickable)
+    onScreenButtonInput.addEventListener("change", handleOnScreenButtonToggle); // Click handlers for setting cards (makes entire card clickable)
     mainSettingCard.addEventListener("click", (e) => {
-      if (e.target !== statusToggle && !e.target.closest(".toggle-switch")) {
+      if (e.target !== statusToggle && !e.target.closest(".toggle")) {
         statusToggle.checked = !statusToggle.checked;
         handleMainToggle();
       }
     });
+
     commentsSettingCard.addEventListener("click", (e) => {
-      if (
-        e.target !== scrollOnCommentsInput &&
-        !e.target.closest(".toggle-switch")
-      ) {
+      if (e.target !== scrollOnCommentsInput && !e.target.closest(".toggle")) {
         scrollOnCommentsInput.checked = !scrollOnCommentsInput.checked;
         handleCommentsToggle();
       }
     });
 
     onScreenButtonSettingCard.addEventListener("click", (e) => {
-      if (
-        e.target !== onScreenButtonInput &&
-        !e.target.closest(".toggle-switch")
-      ) {
+      if (e.target !== onScreenButtonInput && !e.target.closest(".toggle")) {
         onScreenButtonInput.checked = !onScreenButtonInput.checked;
         handleOnScreenButtonToggle();
       }
@@ -195,16 +187,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("[Popup] Error checking current tab:", error);
     }
   }
-
   function updateStatus(isActive, title, description, statusType) {
-    // Update status card class
-    statusCard.className = "status-card";
-    if (statusType) {
-      statusCard.classList.add(statusType);
-    } else {
-      statusCard.classList.add(isActive ? "active" : "inactive");
-    }
-
     // Update status dot
     statusDot.className = "status-dot";
     if (statusType === "warning") {
@@ -213,14 +196,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       statusDot.classList.add("inactive");
     }
 
-    // Update text
-    statusTitle.textContent =
-      title || (isActive ? "Extension Active" : "Extension Disabled");
-    statusDescription.textContent =
-      description ||
-      (isActive
-        ? "Auto-scrolling YouTube Shorts"
-        : "Toggle to enable auto-scrolling");
+    // Update status text
+    statusText.textContent = title || (isActive ? "Active" : "Inactive");
   }
 
   function showError(message) {
