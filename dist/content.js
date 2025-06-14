@@ -319,35 +319,96 @@ function createOnScreenToggleButton() {
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            background: ${
-              applicationIsOn ? "#065fd4" : "rgba(255,255,255,0.1)"
-            };
+            background: transparent;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            margin: 0 auto 12px auto;
-            border: 2px solid ${
-              applicationIsOn ? "#065fd4" : "rgba(255,255,255,0.3)"
-            };
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            margin: 0 auto 19px auto;
+            transition: all 0.2s ease;
             position: relative;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            ${
+              applicationIsOn
+                ? "box-shadow: 0 0 10px 2px rgba(255, 0, 0, 0.2);"
+                : ""
+            }
         " title="${
           applicationIsOn
             ? "Auto-scroll ON - Click to disable"
             : "Auto-scroll OFF - Click to enable"
         }">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="
-                color: ${applicationIsOn ? "white" : "rgba(255,255,255,0.7)"};
-                transition: color 0.3s ease;
+            <div style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                position: relative;
             ">
-                <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/>
-                <path d="M7.41 2.59L12 7.17l4.59-4.58L18 4l-6 6-6-6 1.41-1.41z" fill="currentColor"/>
-            </svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="
+                    color: ${applicationIsOn ? "#FF0000" : "#AAAAAA"};
+                    transition: color 0.2s ease, transform 0.2s ease;
+                    filter: ${
+                      applicationIsOn
+                        ? "drop-shadow(0 0 3px rgba(255, 0, 0, 0.5))"
+                        : "none"
+                    };
+                    margin-bottom: 2px;
+                ">
+                    <path d="M7 10l5 5 5-5H7z" fill="currentColor"/>
+                    <path d="M7 14l5 5 5-5H7z" fill="currentColor"/>
+                </svg>
+                <span style="
+                    font-size: 11px;
+                    line-height: 1;
+                    color: ${applicationIsOn ? "#FF0000" : "#AAAAAA"};
+                    font-family: 'Roboto', 'Arial', sans-serif;
+                    font-weight: ${applicationIsOn ? "500" : "400"};
+                    transition: color 0.2s ease;
+                    ${
+                      applicationIsOn
+                        ? "text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);"
+                        : ""
+                    }
+                ">
+                    ${applicationIsOn ? "ON" : "OFF"}
+                </span>
+            </div>
+        </div>
         </div>
     `;
+
+  // Add hover effect with JavaScript
+  const buttonDiv = toggleButton.querySelector("div");
+  buttonDiv.addEventListener("mouseenter", () => {
+    const innerDiv = buttonDiv.querySelector("div");
+    const svgElement = innerDiv.querySelector("svg");
+    const textElement = innerDiv.querySelector("span");
+
+    if (applicationIsOn) {
+      buttonDiv.style.background = "rgba(255, 0, 0, 0.1)";
+      svgElement.style.transform = "scale(1.1)";
+    } else {
+      buttonDiv.style.background = "rgba(255, 255, 255, 0.1)";
+      svgElement.style.color = "#FFFFFF";
+      textElement.style.color = "#FFFFFF";
+    }
+  });
+
+  buttonDiv.addEventListener("mouseleave", () => {
+    const innerDiv = buttonDiv.querySelector("div");
+    const svgElement = innerDiv.querySelector("svg");
+    const textElement = innerDiv.querySelector("span");
+
+    buttonDiv.style.background = "transparent";
+    svgElement.style.transform = "scale(1)";
+
+    if (!applicationIsOn) {
+      svgElement.style.color = "#AAAAAA";
+      textElement.style.color = "#AAAAAA";
+    }
+  });
 
   toggleButton.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -373,21 +434,39 @@ function updateOnScreenButtonState() {
   if (!onScreenToggleButton) return;
 
   const buttonElement = onScreenToggleButton.querySelector("div");
-  const svgElement = onScreenToggleButton.querySelector("svg");
+  const innerDiv = buttonElement?.querySelector("div");
+  const svgElement = innerDiv?.querySelector("svg");
+  const textElement = innerDiv?.querySelector("span");
 
-  if (buttonElement && svgElement) {
-    buttonElement.style.background = applicationIsOn
-      ? "#065fd4"
-      : "rgba(255,255,255,0.1)";
-    buttonElement.style.borderColor = applicationIsOn
-      ? "#065fd4"
-      : "rgba(255,255,255,0.3)";
+  if (buttonElement) {
     buttonElement.title = applicationIsOn
       ? "Auto-scroll ON - Click to disable"
       : "Auto-scroll OFF - Click to enable";
-    svgElement.style.color = applicationIsOn
-      ? "white"
-      : "rgba(255,255,255,0.7)";
+
+    // Add or remove glow effect
+    if (applicationIsOn) {
+      buttonElement.style.boxShadow = "0 0 10px 2px rgba(255, 0, 0, 0.2)";
+    } else {
+      buttonElement.style.boxShadow = "none";
+      buttonElement.style.background = "transparent";
+    }
+
+    if (svgElement) {
+      svgElement.style.color = applicationIsOn ? "#FF0000" : "#AAAAAA";
+      svgElement.style.filter = applicationIsOn
+        ? "drop-shadow(0 0 3px rgba(255, 0, 0, 0.5))"
+        : "none";
+      svgElement.style.transform = "scale(1)";
+    }
+
+    if (textElement) {
+      textElement.textContent = applicationIsOn ? "ON" : "OFF";
+      textElement.style.color = applicationIsOn ? "#FF0000" : "#AAAAAA";
+      textElement.style.fontWeight = applicationIsOn ? "500" : "400";
+      textElement.style.textShadow = applicationIsOn
+        ? "0 0 5px rgba(255, 0, 0, 0.3)"
+        : "none";
+    }
   }
 }
 
