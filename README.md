@@ -1,6 +1,6 @@
 # YouTube Shorts Auto Scroller
 
-![Extension Icon](./icons/Main.png)
+![Extension Icon](./assets/Main.png)
 
 ## 🚀 Overview
 
@@ -59,7 +59,7 @@
 
 ## 🖼️ Screenshots
 
-> ![Popup Screenshot](./icons/UI.png)
+> ![Popup Screenshot](./assets/UI.png)
 
 ---
 

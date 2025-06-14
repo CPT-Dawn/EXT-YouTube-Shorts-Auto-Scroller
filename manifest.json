@@ -5,21 +5,21 @@
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/*"],
-      "js": ["./dist/content.js"]
+      "js": ["./content.js"]
     }
   ],
   "permissions": ["tabs", "storage"],
   "icons": {
-    "16": "./icons/icon16.png",
-    "48": "./icons/icon48.png",
-    "128": "./icons/icon128.png"
+    "16": "./icon/icon16.png",
+    "48": "./icon/icon48.png",
+    "128": "./icon/icon128.png"
   },
   "background": {
-    "service_worker": "./dist/background.js"
+    "service_worker": "./background.js"
   },
   "action": {
-    "default_popup": "./popup/popup.html",
-    "default_icon": "./icons/icon128.png",
+    "default_popup": "./popup.html",
+    "default_icon": "./icon/icon128.png",
     "default_title": "Start scrolling!"
   },
   "description": "Auto-scroll YouTube Shorts hands-free! Watch nonstop while eating, working, or multitasking—no taps needed! 🚀"
