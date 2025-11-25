@@ -6,8 +6,8 @@ const VIDEOS_LIST_SELECTORS = [
   ".reel-video-in-sequence-new",
 ];
 const CURRENT_SHORT_SELECTOR = "ytd-reel-video-renderer";
-const LIKE_BUTTON_SELECTOR = "#like-button button";
-const DISLIKE_BUTTON_SELECTOR = "#dislike-button button";
+const LIKE_BUTTON_SELECTOR = "like-button-view-model button, #like-button button, [aria-label*='like' i] button";
+const DISLIKE_BUTTON_SELECTOR = "dislike-button-view-model button, #dislike-button button, [aria-label*='dislike' i] button";
 const COMMENTS_SELECTOR =
   "ytd-engagement-panel-section-list-renderer[target-id='engagement-panel-comments-section']";
 const LIKES_COUNT_SELECTOR =
@@ -94,6 +94,11 @@ async function checkForNewShort() {
   if (currentShort?.id != currentShortId) {
     // Prevent scrolling from previous short ending
     if (scrollTimeout) clearTimeout(scrollTimeout);
+    
+    // Remove the old button from the previous short's action bar
+    // This ensures a new button is created for the current short
+    removeOnScreenToggleButton();
+    
     // Remove event listener from the previous video element
     const previousShort = currentVideoElement;
     if (previousShort) {
@@ -308,17 +313,39 @@ function createOnScreenToggleButton() {
   if (onScreenToggleButton || !showOnScreenButton) return;
 
   const likeButton = document.querySelector(LIKE_BUTTON_SELECTOR);
-  if (!likeButton) return;
+  if (!likeButton) {
+    console.log("[Auto Youtube Shorts Scroller] Like button not found with selector:", LIKE_BUTTON_SELECTOR);
+    return;
+  }
+  console.log("[Auto Youtube Shorts Scroller] Like button found:", likeButton);
 
+  // Find the button container (the view-model wrapper or traditional container)
   const buttonContainer =
+    likeButton.closest("like-button-view-model") ||
+    likeButton.closest("button-view-model") ||
     likeButton.closest("#like-button") ||
     likeButton.closest('[role="button"]') ||
     likeButton.closest("ytd-toggle-button-renderer") ||
     likeButton.parentElement;
-  if (!buttonContainer) return;
+  
+  if (!buttonContainer) {
+    console.log("[Auto Youtube Shorts Scroller] Button container not found");
+    return;
+  }
 
-  const actionBar = buttonContainer.parentElement;
-  if (!actionBar) return;
+  // Find the action bar (where we'll insert our button)
+  const actionBar = 
+    buttonContainer.closest("reel-action-bar-view-model") ||
+    buttonContainer.closest("#button-bar") ||
+    buttonContainer.closest("#actions") ||
+    buttonContainer.parentElement;
+  
+  if (!actionBar) {
+    console.log("[Auto Youtube Shorts Scroller] Action bar not found");
+    return;
+  }
+  
+  console.log("[Auto Youtube Shorts Scroller] Found action bar:", actionBar.tagName);
 
   const toggleButton = document.createElement("div");
   toggleButton.id = "yt-shorts-auto-scroll-toggle";
