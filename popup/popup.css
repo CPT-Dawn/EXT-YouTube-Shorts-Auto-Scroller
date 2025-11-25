@@ -10,7 +10,6 @@ body {
   background: #0f0f0f;
   color: #ffffff;
   width: 380px;
-  min-height: 480px;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -461,18 +460,4 @@ input[type="checkbox"]:checked + .toggle-slider:hover {
   outline: 2px solid rgba(255, 0, 0, 0.4);
   outline-offset: 3px;
   box-shadow: 0 0 0 6px rgba(255, 0, 0, 0.08);
-}
-
-/* ===== ADDITIONAL ENHANCEMENTS ===== */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-2px);
-  }
-}
-
-.setting-card:hover {
-  animation: float 2s ease-in-out infinite;
 }
