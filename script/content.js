@@ -303,7 +303,7 @@ function createOnScreenToggleButton() {
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            margin: 0 auto 19px auto;
+            margin: 0 auto 7px auto;
             transition: all 0.2s ease;
             position: relative;
             ${
