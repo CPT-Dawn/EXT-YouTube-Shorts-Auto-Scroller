@@ -49,7 +49,7 @@ function stopAutoScrolling() {
   updateOnScreenButtonState();
 }
 async function checkForNewShort() {
-  if (!applicationIsOn || !isShortsPage()) return;
+  if (!isShortsPage()) return;
 
   // Always attempt to inject/manage button when a new short is detected (or first load)
   checkAndManageOnScreenButton();
@@ -91,7 +91,11 @@ async function checkForNewShort() {
           // If the video element is not found, scroll to the next short
           let prevShortId = currentShortId;
           currentShortId = null;
-          return scrollToNextShort(prevShortId);
+          if (applicationIsOn) {
+            return scrollToNextShort(prevShortId);
+          } else {
+            return;
+          }
         }
         await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
         l++;
@@ -102,9 +106,11 @@ async function checkForNewShort() {
       currentShort.querySelector("ytd-ad-slot-renderer") ||
       currentShort.querySelector("ad-button-view-model")
     ) {
-      // Make sure to remove any existing button before skipping
-      removeOnScreenToggleButton();
-      return scrollToNextShort(currentShortId, false);
+      if (applicationIsOn) {
+        // Make sure to remove any existing button before skipping
+        removeOnScreenToggleButton();
+        return scrollToNextShort(currentShortId, false);
+      }
     }
     
     // Add event listener to the current video element
