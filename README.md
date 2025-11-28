@@ -35,7 +35,7 @@
 ## �️ Screenshots
 
 <div align="center">
-  <img src="./assets/UI.png" alt="Extension Popup UI" width="600" />
+  <img src="Assets/UI.png" alt="Extension Popup UI" width="600" />
   <p><i>Clean and intuitive settings popup</i></p>
 </div>
 
