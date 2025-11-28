@@ -1,74 +1,105 @@
-# YouTube Shorts Auto Scroller
+<div align="center">
+  <img src="./assets/Main.png" alt="Shorts Flow Logo" width="128" height="128" />
 
-![Extension Icon](./assets/Main.png)
+  # Shorts Flow: Auto Scroll & Ad Skip
+  
+  **Experience YouTube Shorts Hands-Free!**
+  
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+  [![Version](https://img.shields.io/badge/version-2.1.1-blue.svg)](manifest.json)
+  [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-green.svg)](https://developer.chrome.com/docs/extensions/mv3/)
 
-## 🚀 Overview
-
-**YouTube Shorts Auto Scroller** is a Chrome extension that lets you watch YouTube Shorts hands-free! Automatically scrolls to the next Short, so you can enjoy endless content while eating, working, or multitasking—no taps needed!
+  <p align="center">
+    <b>Auto-scroll continuously, skip ads instantly, and never swipe again.</b><br />
+    Perfect for eating, working, or multitasking. 🚀
+  </p>
+</div>
 
 ---
 
-## ✨ Features
+## � Overview
 
-- ⏩ **Auto-scrolls** to the next YouTube Short
-- 🕒 **Hands-free** experience for binge-watching
-- ⚡ **Lightweight** and easy to use
-- 🎨 Modern popup UI
-- 🗂️ **Toggle to control auto-scroll with comments open**: Decide whether the extension should go to the next Short even when comments are open, giving you more control over your viewing experience.
+**Shorts Flow** is a powerful Chrome extension designed to enhance your YouTube Shorts viewing experience. It removes the need for manual interaction by automatically scrolling to the next video once the current one finishes. Whether you're busy with your hands or just want a seamless binge-watching session, Shorts Flow has you covered.
+
+## ✨ Key Features
+
+- **⏩ Smart Auto-Scroll**: Automatically detects when a Short ends and scrolls to the next one smoothly.
+- **🚫 Instant Ad Skip**: Detects and skips ads immediately, so you never have to wait.
+- **🕹️ Quick Toggle Button**: Adds a convenient on-screen button right above the 'Like' icon for easy control without opening the popup.
+- **� Scroll with Comments**: Configurable option to continue auto-scrolling even when you have the comments section open.
+- **🎨 Modern UI**: A sleek, user-friendly popup interface that looks right at home on YouTube.
+- **⚡ Lightweight & Fast**: Optimized performance with minimal impact on browser resources.
 
 ---
 
-## 📦 File Structure
+## �️ Screenshots
 
-```
-├── icons/                # Extension icons
-│   ├── icon16.png
-│   ├── icon48.png
-│   ├── icon128.png
-│   └── Main.png
-├── popup/                # Popup UI
-│   ├── popup.html
-│   └── popup.css
-├── scripts/              # Main extension scripts
-│   ├── background.js
-│   ├── content.js
-│   └── script.js
-├── manifest.json         # Extension manifest
-└── README.md             # This file
-```
+<div align="center">
+  <img src="./assets/UI.png" alt="Extension Popup UI" width="600" />
+  <p><i>Clean and intuitive settings popup</i></p>
+</div>
 
 ---
 
 ## 🛠️ Installation
 
-1. **Clone or Download** this repository.
-2. Go to `chrome://extensions/` in your browser.
-3. Enable **Developer mode** (top right).
-4. Click **Load unpacked** and select this project folder.
-5. Enjoy hands-free YouTube Shorts!
+Since this extension is currently in development/manual mode, you can install it by following these simple steps:
+
+1.  **Clone or Download** this repository to your local machine.
+    ```bash
+    git clone https://github.com/yourusername/EXT-YouTube-Shorts-Auto-Scroller.git
+    ```
+    *(Or download the ZIP and extract it)*
+
+2.  Open Google Chrome and navigate to **Extensions Management**:
+    - Type `chrome://extensions/` in the address bar.
+    - Or go to `Menu` > `Extensions` > `Manage Extensions`.
+
+3.  Enable **Developer Mode** by toggling the switch in the top-right corner.
+
+4.  Click the **Load unpacked** button that appears in the top-left.
+
+5.  Select the folder where you downloaded/extracted this repository (the folder containing `manifest.json`).
+
+6.  🎉 **Done!** The extension is now installed and active.
 
 ---
 
 ## 📋 Usage
 
-- Click the extension icon in your browser.
-- Use the popup to start or stop auto-scrolling.
-- Adjust settings as needed (future updates).
+### 1. The Popup Menu
+Click the extension icon in your browser toolbar to open the settings menu.
+- **Auto-Scroll**: Master switch to enable/disable the main functionality.
+- **Quick Toggle**: Show/Hide the floating button on the YouTube interface.
+- **Scroll with Comments**: Choose if scrolling should pause or continue when you're reading comments.
 
----
-
-## 🖼️ Screenshots
-
-> ![Popup Screenshot](./assets/UI.png)
+### 2. On-Screen Controls
+If enabled, you'll see a small toggle button on the right side of the Shorts player (above the Like button).
+- **Click it** to quickly pause or resume auto-scrolling without leaving full-screen mode.
 
 ---
 
 ## 🤝 Contributing
 
-Pull requests and suggestions are welcome! Feel free to open an issue or submit a PR.
+We welcome contributions from the community! If you have ideas for new features, bug fixes, or improvements, please feel free to help out.
+
+### How to Contribute
+1.  **Fork** the repository.
+2.  Create a new **Branch** for your feature or fix (`git checkout -b feature/AmazingFeature`).
+3.  **Commit** your changes (`git commit -m 'Add some AmazingFeature'`).
+4.  **Push** to the branch (`git push origin feature/AmazingFeature`).
+5.  Open a **Pull Request**.
+
+> **Note**: Please ensure your code follows the existing style and conventions. All PRs will be reviewed before merging.
 
 ---
 
 ## 📄 License
 
-MIT License. See [LICENSE](LICENSE) for details.
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+  <sub>Built with ❤️ for YouTube Shorts lovers.</sub>
+</div>
