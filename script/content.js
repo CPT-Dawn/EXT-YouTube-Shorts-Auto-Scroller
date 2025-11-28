@@ -70,7 +70,7 @@ async function checkForNewShort() {
       previousShort._hasEndEvent = false;
     }
     // Set the new current short id and video element
-    currentShortId = parseInt(currentShort.id);
+    currentShortId = currentShort.id; // Store as string to preserve exact ID
     currentVideoElement = currentShort.querySelector("video");
     // Looping check if the current short has a video element
     if (currentVideoElement == null) {
@@ -112,8 +112,10 @@ async function checkForNewShort() {
       "[Auto Youtube Shorts Scroller] Adding event listener to video element...",
       currentVideoElement
     );
-    currentVideoElement.addEventListener("ended", shortEnded);
-    currentVideoElement._hasEndEvent = true;
+    if (currentVideoElement) {
+      currentVideoElement.addEventListener("ended", shortEnded);
+      currentVideoElement._hasEndEvent = true;
+    }
     // Check if the current short has metadata
     const isMetaDataHydrated = (selector) => {
       return currentShort.querySelector(selector) != null;
@@ -254,12 +256,14 @@ async function waitForNextShort(retries = 5, delay = 500) {
 
     // Strategy 2: Fallback to ID + 1 (only if sibling check failed or currentShort wasn't found)
     if (!nextShort) {
-      const nextId = currentShortId + 1;
-      const potentialNext = findShortContainer(nextId);
-      // STRICT CHECK: Only accept if the ID actually matches what we asked for.
-      // findShortContainer falls back to active/first short if not found, which we DON'T want here.
-      if (potentialNext && potentialNext.id == nextId.toString()) {
-        nextShort = potentialNext;
+      const currentIdNum = parseInt(currentShortId);
+      if (!isNaN(currentIdNum)) {
+        const nextId = currentIdNum + 1;
+        const potentialNext = findShortContainer(nextId);
+        // STRICT CHECK: Only accept if the ID actually matches what we asked for.
+        if (potentialNext && potentialNext.id == nextId.toString()) {
+          nextShort = potentialNext;
+        }
       }
     }
 
@@ -485,6 +489,11 @@ function removeOnScreenToggleButton() {
 
 function checkAndManageOnScreenButton() {
   if (showOnScreenButton && isShortsPage()) {
+    // Check if the button is still in the DOM
+    if (onScreenToggleButton && !document.body.contains(onScreenToggleButton)) {
+      onScreenToggleButton = null; // Reset if removed from DOM
+    }
+
     if (!onScreenToggleButton) {
       createOnScreenToggleButton();
     } else {
