@@ -23,6 +23,7 @@ let currentShortId = null;
 let currentVideoElement = null;
 let applicationIsOn = false;
 let onScreenToggleButton = null;
+let buttonObserver = null; // Observer for the button container
 let scrollTimeout;
 const MAX_RETRIES = 15;
 const RETRY_DELAY_MS = 500;
@@ -435,6 +436,29 @@ function createOnScreenToggleButton() {
   actionBar.insertBefore(toggleButton, buttonContainer);
   onScreenToggleButton = toggleButton;
   console.log("[Auto Youtube Shorts Scroller] On-screen toggle button created");
+  
+  // Setup observer to ensure button stays in DOM
+  setupButtonObserver(actionBar);
+}
+
+function setupButtonObserver(targetNode) {
+  // Disconnect existing observer if any
+  if (buttonObserver) {
+    buttonObserver.disconnect();
+  }
+
+  // Create a new observer instance
+  buttonObserver = new MutationObserver((mutations) => {
+    // Check if our button is still in the DOM
+    if (onScreenToggleButton && !document.body.contains(onScreenToggleButton)) {
+      console.log("[Auto Youtube Shorts Scroller] Button removed by external change, re-injecting...");
+      onScreenToggleButton = null;
+      createOnScreenToggleButton();
+    }
+  });
+
+  // Start observing the target node for configured mutations
+  buttonObserver.observe(targetNode, { childList: true, subtree: true });
 }
 
 function updateOnScreenButtonState() {
@@ -478,6 +502,10 @@ function updateOnScreenButtonState() {
 }
 
 function removeOnScreenToggleButton() {
+  if (buttonObserver) {
+    buttonObserver.disconnect();
+    buttonObserver = null;
+  }
   if (onScreenToggleButton) {
     onScreenToggleButton.remove();
     onScreenToggleButton = null;

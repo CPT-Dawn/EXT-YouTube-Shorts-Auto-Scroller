@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Shorts Flow: Auto Scroller for YouTube",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Experience YouTube Shorts hands-free. Auto-scroll incessantly, skip ads instantly, and get in the flow. No swipes needed. 🚀",
   "content_scripts": [
     {
