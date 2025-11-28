@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/Main.png" alt="Shorts Flow Logo" width="128" height="128" />
+  <img src="Assets/Logo.png" alt="Shorts Flow Logo" width="128" height="128" />
 
   # Shorts Flow: Auto Scroll & Ad Skip
   
