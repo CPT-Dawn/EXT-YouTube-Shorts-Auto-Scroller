@@ -63,7 +63,6 @@ async function checkForNewShort() {
 
     // Periodic sanity check every 10 shorts
     if (shortsScrolledCount % 10 === 0) {
-      console.log("[Auto Youtube Shorts Scroller] Performing periodic button check...");
       checkAndManageOnScreenButton();
     }
 
@@ -92,9 +91,6 @@ async function checkForNewShort() {
           // If the video element is not found, scroll to the next short
           let prevShortId = currentShortId;
           currentShortId = null;
-          console.log(
-            "[Auto Youtube Shorts Scroller] Video element not found, scrolling to next short..."
-          );
           return scrollToNextShort(prevShortId);
         }
         await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
@@ -106,23 +102,12 @@ async function checkForNewShort() {
       currentShort.querySelector("ytd-ad-slot-renderer") ||
       currentShort.querySelector("ad-button-view-model")
     ) {
-      console.log(
-        "[Auto Youtube Shorts Scroller] Ad detected..., scrolling to next short..."
-      );
       // Make sure to remove any existing button before skipping
       removeOnScreenToggleButton();
       return scrollToNextShort(currentShortId, false);
     }
-    // Log the current short id
-    console.log(
-      "[Auto Youtube Shorts Scroller] Current ID of Short: ",
-      currentShortId
-    );
+    
     // Add event listener to the current video element
-    console.log(
-      "[Auto Youtube Shorts Scroller] Adding event listener to video element...",
-      currentVideoElement
-    );
     if (currentVideoElement) {
       currentVideoElement.addEventListener("ended", shortEnded);
       currentVideoElement._hasEndEvent = true;
@@ -136,13 +121,9 @@ async function checkForNewShort() {
       // If the creator name is not found, wait for it to load (A long with other data)
       while (!isMetaDataHydrated(AUTHOUR_NAME_SELECTOR)) {
         if (l > MAX_RETRIES) {
-          // If after time not found, scroll to next short
-          let prevShortId = currentShortId;
-          currentShortId = null;
-          console.log(
-            "[Auto Youtube Shorts Scroller] Metadata not hydrated, scrolling to next short..."
-          );
-          return scrollToNextShort(prevShortId, false);
+          // If after time not found, just continue. Do NOT reset and scroll.
+          // This prevents the loop that causes flickering.
+          break; 
         }
         await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
         l++;
@@ -158,9 +139,6 @@ async function checkForNewShort() {
 function shortEnded(e) {
   e.preventDefault();
   if (!applicationIsOn) return stopAutoScrolling();
-  console.log(
-    "[Auto Youtube Shorts Scroller] Short ended, scrolling to next short..."
-  );
   scrollToNextShort(currentShortId);
 }
 async function scrollToNextShort(
@@ -286,9 +264,6 @@ async function waitForNextShort(retries = 5, delay = 500) {
     window.scrollBy(0, -100);
     await new Promise((r) => setTimeout(r, delay));
   }
-  console.log(
-    "[Auto Youtube Shorts Scroller] The next short has not loaded in, reloading page..."
-  );
   return null;
 }
 
@@ -297,10 +272,8 @@ function createOnScreenToggleButton() {
 
   const likeButton = document.querySelector(LIKE_BUTTON_SELECTOR);
   if (!likeButton) {
-    console.log("[Auto Youtube Shorts Scroller] Like button not found with selector:", LIKE_BUTTON_SELECTOR);
     return;
   }
-  console.log("[Auto Youtube Shorts Scroller] Like button found:", likeButton);
 
   // Find the button container (the view-model wrapper or traditional container)
   const buttonContainer =
@@ -312,7 +285,6 @@ function createOnScreenToggleButton() {
     likeButton.parentElement;
   
   if (!buttonContainer) {
-    console.log("[Auto Youtube Shorts Scroller] Button container not found");
     return;
   }
 
@@ -324,12 +296,9 @@ function createOnScreenToggleButton() {
     buttonContainer.parentElement;
   
   if (!actionBar) {
-    console.log("[Auto Youtube Shorts Scroller] Action bar not found");
     return;
   }
   
-  console.log("[Auto Youtube Shorts Scroller] Found action bar:", actionBar.tagName);
-
   const toggleButton = document.createElement("div");
   toggleButton.id = "yt-shorts-auto-scroll-toggle";
   toggleButton.innerHTML = `
@@ -445,7 +414,6 @@ function createOnScreenToggleButton() {
 
   actionBar.insertBefore(toggleButton, buttonContainer);
   onScreenToggleButton = toggleButton;
-  console.log("[Auto Youtube Shorts Scroller] On-screen toggle button created");
 }
 
 function updateOnScreenButtonState() {
@@ -492,9 +460,6 @@ function removeOnScreenToggleButton() {
   if (onScreenToggleButton) {
     onScreenToggleButton.remove();
     onScreenToggleButton = null;
-    console.log(
-      "[Auto Youtube Shorts Scroller] On-screen toggle button removed"
-    );
   }
 }
 
