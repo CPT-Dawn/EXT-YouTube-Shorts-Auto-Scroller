@@ -23,8 +23,8 @@ let currentShortId = null;
 let currentVideoElement = null;
 let applicationIsOn = false;
 let onScreenToggleButton = null;
-let buttonObserver = null; // Observer for the button container
 let scrollTimeout;
+let shortsScrolledCount = 0; // Counter for periodic checks
 const MAX_RETRIES = 15;
 const RETRY_DELAY_MS = 500;
 // ------------------------------
@@ -51,12 +51,22 @@ function stopAutoScrolling() {
 async function checkForNewShort() {
   if (!applicationIsOn || !isShortsPage()) return;
 
+  // Always attempt to inject/manage button when a new short is detected (or first load)
   checkAndManageOnScreenButton();
 
   const currentShort = findShortContainer();
   if (!currentShort) return;
   // Checks if the current short is the same as the last one
   if (currentShort?.id != currentShortId) {
+    // Increment counter
+    shortsScrolledCount++;
+
+    // Periodic sanity check every 10 shorts
+    if (shortsScrolledCount % 10 === 0) {
+      console.log("[Auto Youtube Shorts Scroller] Performing periodic button check...");
+      checkAndManageOnScreenButton();
+    }
+
     // Prevent scrolling from previous short ending
     if (scrollTimeout) clearTimeout(scrollTimeout);
     
@@ -436,29 +446,6 @@ function createOnScreenToggleButton() {
   actionBar.insertBefore(toggleButton, buttonContainer);
   onScreenToggleButton = toggleButton;
   console.log("[Auto Youtube Shorts Scroller] On-screen toggle button created");
-  
-  // Setup observer to ensure button stays in DOM
-  setupButtonObserver(actionBar);
-}
-
-function setupButtonObserver(targetNode) {
-  // Disconnect existing observer if any
-  if (buttonObserver) {
-    buttonObserver.disconnect();
-  }
-
-  // Create a new observer instance
-  buttonObserver = new MutationObserver((mutations) => {
-    // Check if our button is still in the DOM
-    if (onScreenToggleButton && !document.body.contains(onScreenToggleButton)) {
-      console.log("[Auto Youtube Shorts Scroller] Button removed by external change, re-injecting...");
-      onScreenToggleButton = null;
-      createOnScreenToggleButton();
-    }
-  });
-
-  // Start observing the target node for configured mutations
-  buttonObserver.observe(targetNode, { childList: true, subtree: true });
 }
 
 function updateOnScreenButtonState() {
@@ -502,10 +489,6 @@ function updateOnScreenButtonState() {
 }
 
 function removeOnScreenToggleButton() {
-  if (buttonObserver) {
-    buttonObserver.disconnect();
-    buttonObserver = null;
-  }
   if (onScreenToggleButton) {
     onScreenToggleButton.remove();
     onScreenToggleButton = null;
@@ -543,7 +526,8 @@ function checkAndManageOnScreenButton() {
   checkApplicationState();
   // Set up intervals for periodic checks
   setInterval(checkForNewShort, RETRY_DELAY_MS);
-  setInterval(checkAndManageOnScreenButton, 1000); // Reduced from 2000ms to 1000ms for more responsive button appearance
+  // Removed continuous button check as per optimization request
+  // setInterval(checkAndManageOnScreenButton, 1000); 
   function checkApplicationState() {
     chrome.storage.local.get(["applicationIsOn"], (result) => {
       if (applicationIsOn && result["applicationIsOn"] === false) {
