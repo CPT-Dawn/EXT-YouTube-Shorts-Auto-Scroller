@@ -222,11 +222,9 @@ function findShortContainer(id = null) {
   }
   // If no shorts are found, return the first short with the id of 0
   if (shorts.length === 0) return document.getElementById(currentShortId || 0);
+  
   // If no id is provided, find the first short with the is-active attribute
-  // If id is provided, return short with id index from shorts list selector
-  return id > 1
-    ? shorts[id]
-    : shorts.find(
+  return shorts.find(
         (short) =>
           // Active short either has the is-active attribute or a hydrated HTML of short.
           short.hasAttribute("is-active") ||
@@ -234,12 +232,39 @@ function findShortContainer(id = null) {
           short.querySelector("[is-active]")
       ) || shorts[0] /*If no short found, return first short */;
 }
+
 async function waitForNextShort(retries = 5, delay = 500) {
   if (!isShortsPage()) return null;
+  
+  // First, try to find the next sibling of the current short
+  // This is the most reliable way as it doesn't depend on IDs being sequential
+  const currentShort = findShortContainer(currentShortId);
+  
   for (let i = 0; i < retries; i++) {
-    // Find the next short container (always scrolls down)
-    const nextShort = findShortContainer(currentShortId + 1);
+    let nextShort = null;
+
+    // Strategy 1: Check next sibling
+    if (currentShort && currentShort.nextElementSibling) {
+      const sibling = currentShort.nextElementSibling;
+      // Verify it matches one of our expected selectors or is a valid container
+      if (VIDEOS_LIST_SELECTORS.some(selector => sibling.matches(selector)) || sibling.tagName.toLowerCase() === 'ytd-reel-video-renderer') {
+        nextShort = sibling;
+      }
+    }
+
+    // Strategy 2: Fallback to ID + 1 (only if sibling check failed or currentShort wasn't found)
+    if (!nextShort) {
+      const nextId = currentShortId + 1;
+      const potentialNext = findShortContainer(nextId);
+      // STRICT CHECK: Only accept if the ID actually matches what we asked for.
+      // findShortContainer falls back to active/first short if not found, which we DON'T want here.
+      if (potentialNext && potentialNext.id == nextId.toString()) {
+        nextShort = potentialNext;
+      }
+    }
+
     if (nextShort) return nextShort;
+
     // If none found, little slight screen shake to trigger hydration of new shorts
     window.scrollBy(0, 100);
     await new Promise((r) => setTimeout(r, delay));
