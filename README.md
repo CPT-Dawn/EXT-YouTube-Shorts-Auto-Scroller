@@ -7,7 +7,7 @@
   
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![Version](https://img.shields.io/badge/version-2.1.1-blue.svg)](manifest.json)
-  [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-green.svg)](https://developer.chrome.com/docs/extensions/mv3/)
+  [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-green.svg)](https://chromewebstore.google.com/detail/shorts-flow-auto-scroll-a/kfkkpgeijmfhmdhlcnoecidgceljccdf?hl=en&authuser=1)
 
   <p align="center">
     <b>Auto-scroll continuously, skip ads instantly, and never swipe again.</b><br />
